@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css" />
+  <link
+  href="https://fonts.googleapis.com/css?family=Poppins:400,500,600&display=swap"
+  rel="stylesheet"/>
+  <title>Bankist</title>
+</head>
+<body>
+  <nav class="flex-center">
+    <p class="login">Login to get started</p>
+    <img src="logo.png" class="logo" />
+    <div>
+      <input type="text" placeholder="User" name="username" class="login-input"></input>
+      <input type="number" placeholder="Pin" name="userpin" class="login-input"></input>
+      <button>&#8594</button>
+    </div>
+  </nav>
+  <main class="app">
+    <div class="flex-center balance">
+         <div>
+            <p class="balance-text">Current balance</p>
+            <p class="balance-date">As of 05/03/2037</p>
+         </div>
+        <p class="balance-amount">0000€</p>
+    </div>
+    <div class="statement">
+      <div class="statement-row">
+        <span class="statement-type positive">2 Deposit</span>
+        <span class="statement-day">3 Days ago</span>
+        <span class="statement-amount">4000€</span>
+      </div>
+      <div class="statement-row">
+        <span class="statement-type negative">1 withdrawal</span>
+        <span class="statement-day">3 Days ago</span>
+        <span class="statement-amount">4000€</span>
+      </div>
+ </div>
+ <div class="transfer">
+        <h3>Transfer money</h3>
+        <form class="operation-boxes">
+          <input name="transferTo" type="text" class="operation-input"/>
+          <input name="transferAmount" type="number" class="operation-input" />
+          <button class="operation-btn">&#8594</button>
+          <label name="transferTo" class="operation-label" >Transfer to</label>
+          <label name="transferAmount" class="operation-label">Amount</label>
+        </form>
+</div>
+<div class="loan">
+  <h3>Request loan</h3>
+  <form class="operation-boxes-loan">
+    <input name="transferTo" type="text" class="operation-input"/>
+    <button class="operation-btn">&#8594</button>
+    <label name="transferTo" class="operation-label loan-label" >Amount </label>
+  </form>
+</div>
+<div class="close">
+  <h3>Close Account</h3>
+  <form class="operation-boxes">
+    <input name="transferTo" type="text" class="operation-input"/>
+    <input name="transferAmount" type="number" class="operation-input" />
+    <button class="operation-btn">&#8594</button>
+    <label name="transferTo" class="operation-label" >Transfer to</label>
+    <label name="transferAmount" class="operation-label">Amount</label>
+  </form>
+</div>
+<div class="summary">
+  <span class="summary-text">In</span>
+  <span class="summary-amount positive-font">0000€</span>
+  <span class="summary-text">Out</span>
+  <span class="summary-amount negative-font">0000€</span>
+  <span class="summary-text">interest</span>
+  <span class="summary-amount last-amount positive-font">0000€</span>
+  <button class="summary-btn">&#8595; Sort</button>
+</div>
+<span class="logout-time">You will be logged out in <b>05:00</b></span>
+  </main>
+</body>
+</html>
