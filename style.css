@@ -163,6 +163,8 @@ h3 {
   font-size: 2rem;
   padding: 0 1rem;
   border-radius: 0.5rem;
+  cursor: pointer;
+
 }
 
 .operation-input {

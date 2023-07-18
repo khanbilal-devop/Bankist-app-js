@@ -80,6 +80,7 @@ const user4 = {
 
 const users = [user1, user2, user3, user4];
 let currentDate = null;
+let currentUser;
 
 // App working logic
 
@@ -99,43 +100,40 @@ const loanBtn = document.getElementById('loan-btn');
 const closeBtn = document.getElementById('close-btn');
 const transferAmtInput = document.getElementById('transfer-amt');
 const transferToInput = document.getElementById('transfer-to');
+const timeDisplay = document.getElementById('current-time');
 let balanceAmount = 0;
 const bankInterestRate = 8;
 
 const checkForCredentials = (userName, password) => {
-  const user = users.find(
+  currentUser = users.find(
     each => userName === each?.userName && password === each?.password
   );
-  if (user) {
+  if (currentUser) {
     // Showing account details and clearing login input's
     appContainer.style.opacity = 1;
     loginUser.value = '';
     loginPassword.value = '';
 
-    // Guessing appropriate greeting message
+    // Showing appropriate greeting message
     currentDate = new Date();
     const currentHour = currentDate.getHours();
-    const greeting =
-      currentHour < 17
-        ? currentHour < 12
-          ? 'Good morning'
-          : 'Good afternoon'
-        : 'Good evening';
-    loginText.innerHTML = `${greeting}, ${user?.name}`;
+    const greeting = greetingsBasedOnHrs(currentHour);
+    loginText.innerHTML = `${greeting}, ${currentUser?.name}`;
 
     // Changing date
-    dateText.innerHTML = `As of ${currentDate.toLocaleDateString('en-GB')} <span id="current-time"><span>`;
+    dateText.innerHTML = `As of ${currentDate.toLocaleDateString(
+      'en-GB'
+    )} <span id="current-time"><span>`;
 
-    let statements = user['statements'];
     // sorting based on dates in descending order i.e farthest to nearest for rendering
-    statements.sort(function(a,b){
+    let statements = currentUser['statements'];
+    statements.sort(function (a, b) {
       return new Date(a.date) - new Date(b.date);
     });
-    //rendering statement
-    renderingBankStatement(statements);
 
-    calcSummaryAndDisplay(statements, user?.interestRate);
-    currentTime();
+    renderingBankStatement(statements);
+    calcSummaryAndDisplay(statements, currentUser?.interestRate);
+    currentTime(timeDisplay);
   } else {
     alert('Bad credentials');
     loginUser.value = '';
@@ -154,16 +152,47 @@ transferBtn.addEventListener('click', e => {
   e.preventDefault();
   const transferTo = transferToInput.value;
   const transferAmt = transferAmtInput.value;
-  if(Number(transferAmt) <= balanceAmount){
-    console.log("proceed with withdraw");
-  }else{
-    alert("Not sufficient balance")
+  if (transferTo && transferAmt) {
+    let transferringTo = (users || [])
+                  .find( each => each?.userName === transferTo);
+    if (Number(transferAmt) <= balanceAmount && transferringTo) {
+      let statements = transferringTo.statements;
+      let deposit = {
+        type: 'Deposit',
+        amount: Number(transferAmt),
+        date: new Date().toLocaleDateString('en-GB'),
+      };
+      statements.push(deposit);
+      statements = currentUser.statements;
+      let withdraw = {
+        type: 'Withdrawal',
+        amount: Number(transferAmt),
+        date: new Date().toLocaleDateString('en-GB'),
+      };
+      statements.push(withdraw);
+      // sorting based on dates in descending order i.e farthest to nearest for rendering
+      statements.sort(function (a, b) {
+        return new Date(a.date) - new Date(b.date);
+      });
+      //rendering statement
+      renderingBankStatement(statements);
+      calcSummaryAndDisplay(statements, currentUser?.interestRate);
+    } else if (!transferringTo) {
+      alert('No such user found to transfer : ' + transferTo);
+    } else {
+      alert('Not sufficient balance');
+    }
+    transferToInput.value = '';
+    transferAmtInput.value = '';
+  } else {
+    alert('Enter proper values');
   }
-})
+});
 
 const renderingBankStatement = statements => {
   let positiveCount = 1;
   let negativeCount = 1;
+  statement.innerHTML = '';
   statements.forEach(each => {
     const statementRow = document.createElement('div');
     statementRow.className = 'statement-row';
@@ -179,7 +208,14 @@ const renderingBankStatement = statements => {
     }
     const statementDays = document.createElement('span');
     statementDays.className = 'statement-day';
-    statementDays.innerHTML = `${calcDaysFromCurrentDate(each?.date)} Days ago`;
+    let date = stringToDate(each?.date, 'dd/MM/yyyy', '/').toLocaleDateString(
+      'en-GB'
+    );
+    if (date !== currentDate.toLocaleDateString('en-GB')) {
+      statementDays.innerHTML = `${calcDaysFromCurrentDate(each?.date)} Days ago`;
+    } else {
+      statementDays.innerHTML = `Today`;
+    }
     const statementAmt = document.createElement('span');
     statementAmt.className = 'statement-amount';
     statementAmt.innerHTML = `${each?.amount}€`;
@@ -190,68 +226,25 @@ const renderingBankStatement = statements => {
   });
 };
 
-function stringToDate(_date, _format, _delimiter) {
-  const formatLowerCase = _format.toLowerCase();
-  const formatItems = formatLowerCase.split(_delimiter);
-  const dateItems = _date.split(_delimiter);
-  const monthIndex = formatItems.indexOf('mm');
-  const dayIndex = formatItems.indexOf('dd');
-  const yearIndex = formatItems.indexOf('yyyy');
-  let month = parseInt(dateItems[monthIndex]);
-  month -= 1;
-  return new Date(dateItems[yearIndex], month, dateItems[dayIndex]);
-}
-
-const calcDaysFromCurrentDate = date => {
-  let difference =
-    new Date().getTime() - stringToDate(date, 'dd/MM/yyyy', '/').getTime();
-  return Math.ceil(difference / (1000 * 3600 * 24));
-};
-
 const calcSummaryAndDisplay = (statement, interestRate) => {
   const depositAmt = (statement || []).reduce((accumulator, each) => {
     if (each?.type === 'Deposit') {
-        accumulator += each?.amount;
+      accumulator += each?.amount;
     }
     return accumulator;
   }, 0);
 
   const withdrawalAmt = (statement || []).reduce((accumulator, each) => {
     if (each?.type !== 'Deposit') {
-        accumulator += each?.amount;
+      accumulator += each?.amount;
     }
     return accumulator;
   }, 0);
 
-  const interestAmt = depositAmt * ((interestRate || bankInterestRate )/ 100);
+  const interestAmt = depositAmt * ((interestRate || bankInterestRate) / 100);
   deposit.innerHTML = `${depositAmt}€`;
   withdrawals.innerHTML = `${withdrawalAmt}€`;
   interest.innerHTML = `${interestAmt}€`;
-  balanceAmount = (depositAmt + interestAmt) - withdrawalAmt;
-  acctBalance.innerHTML = `${balanceAmount}€`
+  balanceAmount = depositAmt + interestAmt - withdrawalAmt;
+  acctBalance.innerHTML = `${balanceAmount}€`;
 };
-
-function currentTime() {
-  let date = new Date(); 
-  let hh = date.getHours();
-  let mm = date.getMinutes();
-  let ss = date.getSeconds();
-  let session = "AM";
-
-  if(hh == 0){
-      hh = 12;
-  }
-  if(hh > 12){
-      hh = hh - 12;
-      session = "PM";
-   }
-
-   hh = (hh < 10) ? "0" + hh : hh;
-   mm = (mm < 10) ? "0" + mm : mm;
-   ss = (ss < 10) ? "0" + ss : ss;
-    
-   let time = hh + ":" + mm + " " + session;
-
-  document.getElementById("current-time").innerText = time; 
-  let t = setTimeout(function(){ currentTime() }, 1000);
-}
