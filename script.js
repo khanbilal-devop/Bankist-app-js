@@ -100,7 +100,11 @@ const loanBtn = document.getElementById('loan-btn');
 const closeBtn = document.getElementById('close-btn');
 const transferAmtInput = document.getElementById('transfer-amt');
 const transferToInput = document.getElementById('transfer-to');
-const timeDisplay = document.getElementById('current-time');
+const loanAmt = document.getElementById('loan-amt');
+const closeUser = document.getElementById('close-user');
+const closePassword = document.getElementById('close-password');
+
+let timeDisplay ; 
 let balanceAmount = 0;
 const bankInterestRate = 8;
 
@@ -124,13 +128,14 @@ const checkForCredentials = (userName, password) => {
     dateText.innerHTML = `As of ${currentDate.toLocaleDateString(
       'en-GB'
     )} <span id="current-time"><span>`;
+    timeDisplay = document.getElementById('current-time');
 
     // sorting based on dates in descending order i.e farthest to nearest for rendering
     let statements = currentUser['statements'];
     statements.sort(function (a, b) {
       return new Date(a.date) - new Date(b.date);
     });
-
+    
     renderingBankStatement(statements);
     calcSummaryAndDisplay(statements, currentUser?.interestRate);
     currentTime(timeDisplay);
@@ -152,9 +157,10 @@ transferBtn.addEventListener('click', e => {
   e.preventDefault();
   const transferTo = transferToInput.value;
   const transferAmt = transferAmtInput.value;
-  if (transferTo && transferAmt) {
+  if (transferTo &&  transferAmt &&  transferTo !== currentUser?.userName ) {
     let transferringTo = (users || [])
                   .find( each => each?.userName === transferTo);
+    
     if (Number(transferAmt) <= balanceAmount && transferringTo) {
       let statements = transferringTo.statements;
       let deposit = {
@@ -184,9 +190,49 @@ transferBtn.addEventListener('click', e => {
     }
     transferToInput.value = '';
     transferAmtInput.value = '';
+  }else if (transferTo === currentUser?.userName){
+    alert("Can't transfer money to yourself");
   } else {
     alert('Enter proper values');
   }
+});
+
+closeBtn.addEventListener('click', e => {
+  e.preventDefault();
+  let userName = closeUser.value;
+  let password = closePassword.value;
+  let userToRemove = users.find(
+    each => userName === each?.userName && password === each?.password
+  );
+  if(userToRemove && userToRemove?.userName === currentUser?.userName){
+    users.splice(users.findIndex(each => each.userName === currentUser.userName) , 1);
+    appContainer.style.opacity = 0;
+  }else if(userToRemove?.userName !== currentUser?.userName){
+    alert("You cant close other people account's")
+  }else{
+    alert('Bad credentials');
+  }
+  closeUser.value = '';
+  closePassword.value = '';
+});
+
+loanBtn.addEventListener('click', e => {
+  e.preventDefault();
+  let loanAmount =  loanAmt.value;
+  if(loanAmount){
+    let statements = currentUser.statements;
+    let loaned = {
+      type: 'Deposit',
+      amount: Number(loanAmount),
+      date: new Date().toLocaleDateString('en-GB'),
+    };
+    statements.push(loaned);
+    renderingBankStatement(statements);
+    calcSummaryAndDisplay(statements, currentUser?.interestRate);
+  }else{
+    alert('No loan amount entered');
+  }
+  loanAmt.value = '';
 });
 
 const renderingBankStatement = statements => {

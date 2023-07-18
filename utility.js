@@ -20,7 +20,7 @@ const currentTime = (htmlElement)  =>{
       
      let time = hh + ":" + mm + " " + session;
      htmlElement.innerText = time;
-     setTimeout(function(){ currentTime() }, 1000);
+     setTimeout(function(){ currentTime(htmlElement) }, 60000);
   }
 
 
@@ -48,4 +48,4 @@ const currentTime = (htmlElement)  =>{
   
 
 // based on day hour it woul return appropriates day's greeting
-  const greetingsBasedOnHrs = (hour) =>  currentHour < 17 ? (currentHour < 12? 'Good morning': 'Good afternoon') : 'Good evening';
+  const greetingsBasedOnHrs = (hour) =>  hour < 17 ? (hour < 12? 'Good morning': 'Good afternoon') : 'Good evening';

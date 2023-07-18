@@ -51,7 +51,7 @@
     <div class="loan">
       <h3>Request loan</h3>
       <form class="operation-boxes-loan">
-        <input name="transferTo" type="text" class="operation-input" />
+        <input name="transferTo" type="text" class="operation-input"  id="loan-amt"/>
         <button class="operation-btn" id="loan-btn">&#8594</button>
         <label name="transferTo" class="operation-label loan-label">Amount </label>
       </form>
@@ -60,11 +60,11 @@
     <div class="close">
       <h3>Close Account</h3>
       <form class="operation-boxes">
-        <input name="transferTo" type="text" class="operation-input" />
-        <input name="transferAmount" type="number" class="operation-input" />
+        <input name="transferTo" type="text" class="operation-input" id="close-user" />
+        <input name="transferAmount" type="password" class="operation-input"  id="close-password"/>
         <button class="operation-btn" id="close-btn">&#8594</button>
-        <label name="transferTo" class="operation-label">Transfer to</label>
-        <label name="transferAmount" class="operation-label">Amount</label>
+        <label name="transferTo" class="operation-label" >Confirm user</label>
+        <label name="transferAmount" class="operation-label" >Confirm pin</label>
       </form>
     </div>
 
