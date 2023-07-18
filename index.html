@@ -14,43 +14,34 @@
   <nav class="flex-center">
     <p class="login">Login to get started</p>
     <img src="logo.png" class="logo" />
-    <div>
+    <form>
       <input type="text" placeholder="User" name="username" class="login-input login-user"></input>
-      <input type="number" placeholder="Pin" name="userpin" class="login-input login-password"></input>
+      <input type="password" placeholder="Pin" name="userpin" class="login-input login-password"></input>
       <button class="login-btn" type="submit">&#8594</button>
-    </div>
+    </form>
   </nav>
   <main class="app">
 
     <div class="flex-center balance">
       <div>
         <p class="balance-text">Current balance</p>
-        <p class="balance-date">As of 05/03/2037</p>
+        <p class="balance-date">  </p>
+        <!-- <span id="current-time"></span> -->
       </div>
       <p class="balance-amount">0000€</p>
     </div>
 
 
     <div class="statement">
-      <div class="statement-row">
-        <span class="statement-type positive">2 Deposit</span>
-        <span class="statement-day">3 Days ago</span>
-        <span class="statement-amount">4000€</span>
-      </div>
-      <div class="statement-row">
-        <span class="statement-type negative">1 withdrawal</span>
-        <span class="statement-day">3 Days ago</span>
-        <span class="statement-amount">4000€</span>
-      </div>
     </div>
 
 
     <div class="transfer">
       <h3>Transfer money</h3>
       <form class="operation-boxes">
-        <input name="transferTo" type="text" class="operation-input" />
-        <input name="transferAmount" type="number" class="operation-input" />
-        <button class="operation-btn">&#8594</button>
+        <input name="transferTo" type="text" class="operation-input" id="transfer-to" />
+        <input name="transferAmount" type="number" class="operation-input"  id="transfer-amt"/>
+        <button class="operation-btn" id="transfer-btn">&#8594</button>
         <label name="transferTo" class="operation-label">Transfer to</label>
         <label name="transferAmount" class="operation-label">Amount</label>
       </form>
@@ -61,7 +52,7 @@
       <h3>Request loan</h3>
       <form class="operation-boxes-loan">
         <input name="transferTo" type="text" class="operation-input" />
-        <button class="operation-btn">&#8594</button>
+        <button class="operation-btn" id="loan-btn">&#8594</button>
         <label name="transferTo" class="operation-label loan-label">Amount </label>
       </form>
     </div>
@@ -71,7 +62,7 @@
       <form class="operation-boxes">
         <input name="transferTo" type="text" class="operation-input" />
         <input name="transferAmount" type="number" class="operation-input" />
-        <button class="operation-btn">&#8594</button>
+        <button class="operation-btn" id="close-btn">&#8594</button>
         <label name="transferTo" class="operation-label">Transfer to</label>
         <label name="transferAmount" class="operation-label">Amount</label>
       </form>
@@ -80,11 +71,11 @@
 
     <div class="summary">
       <span class="summary-text">In</span>
-      <span class="summary-amount positive-font">0000€</span>
+      <span class="summary-amount positive-font" id="deposit">0000€</span>
       <span class="summary-text">Out</span>
-      <span class="summary-amount negative-font">0000€</span>
+      <span class="summary-amount negative-font" id="withdraw">0000€</span>
       <span class="summary-text">interest</span>
-      <span class="summary-amount last-amount positive-font">0000€</span>
+      <span class="summary-amount last-amount positive-font" id="interest">0000€</span>
       <button class="summary-btn">&#8595; Sort</button>
     </div>
 
